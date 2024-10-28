@@ -1,0 +1,69 @@
+# Importar las librerías necesarias
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Cargar el dataset (reemplaza 'ruta/del/dataset.csv' con la ruta de tu archivo)
+df = pd.read_csv('ruta/del/dataset.csv')  # Asegúrate de colocar la ruta correcta
+
+# Ejercicio 1: Revisión inicial del dataset
+
+# Número de filas y columnas
+num_filas = df.shape[0]
+num_columnas = df.shape[1]
+
+# Costo de vida promedio
+costo_vida_promedio = df["Cost of Living"].mean()
+
+# País con el costo de vida más alto
+pais_mas_caro = df.loc[df["Cost of Living"].idxmax(), "Countries"]
+costo_mas_caro = df["Cost of Living"].max()
+
+# País con el costo de vida más bajo
+pais_mas_barato = df.loc[df["Cost of Living"].idxmin(), "Countries"]
+costo_mas_barato = df["Cost of Living"].min()
+
+# Costo de vida y ranking en Perú
+costo_peru = df[df["Countries"] == "Peru"]["Cost of Living"].values[0] if "Peru" in df["Countries"].values else "No disponible"
+ranking_peru = df[df["Countries"] == "Peru"]["Global Rank"].values[0] if "Peru" in df["Countries"].values else "No disponible"
+
+# Imprimir los resultados
+print("Número de filas:", num_filas)
+print("Número de columnas:", num_columnas)
+print("Costo de vida promedio:", costo_vida_promedio)
+print("País con costo de vida más alto:", pais_mas_caro, "-", costo_mas_caro)
+print("País con costo de vida más bajo:", pais_mas_barato, "-", costo_mas_barato)
+print("Costo de vida en Perú:", costo_peru)
+print("Ranking de Perú:", ranking_peru)
+
+# Ejercicio 2: Visualizaciones
+
+# 1. Los 10 países con el costo de vida más alto
+top_10_mas_caro = df.nlargest(10, "Cost of Living")
+plt.figure(figsize=(10, 6))
+plt.barh(top_10_mas_caro["Countries"], top_10_mas_caro["Cost of Living"], color='salmon')
+plt.xlabel("Costo de Vida")
+plt.title("Top 10 países con el costo de vida más alto")
+plt.gca().invert_yaxis()  # Invertir el eje y para mostrar el país con mayor costo arriba
+plt.show()
+
+# 2. Los 10 países con el costo de vida más bajo
+top_10_mas_barato = df.nsmallest(10, "Cost of Living")
+plt.figure(figsize=(10, 6))
+plt.barh(top_10_mas_barato["Countries"], top_10_mas_barato["Cost of Living"], color='lightgreen')
+plt.xlabel("Costo de Vida")
+plt.title("Top 10 países con el costo de vida más bajo")
+plt.gca().invert_yaxis()  # Invertir el eje y para mostrar el país con menor costo arriba
+plt.show()
+
+# 3. Costo de vida de los países de América
+# Aquí asumimos que existe una columna 'Region' en el dataset que indica los países de América.
+# Si no la tienes, puedes hacer un filtro manualmente o crear una lista de países americanos.
+paises_america = ["Argentina", "Brazil", "Chile", "Colombia", "Peru", "Mexico", "Canada", "United States"]  # Agrega otros países según sea necesario
+df_america = df[df["Countries"].isin(paises_america)]
+
+plt.figure(figsize=(10, 6))
+plt.barh(df_america["Countries"], df_america["Cost of Living"], color='skyblue')
+plt.xlabel("Costo de Vida")
+plt.title("Costo de vida en países de América")
+plt.gca().invert_yaxis()  # Invertir el eje y para mostrar el país con mayor costo arriba
+plt.show()
